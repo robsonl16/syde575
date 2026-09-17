@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 from PIL import Image
 from scipy.ndimage import zoom
@@ -5,15 +7,12 @@ from skimage import color
 
 from utils.psnr import PSNR
 
-CAMERAMAN_ASSET_PATH = (
-    "C:\\Users\\robso_jdkjtyb\\Documents\\GitHub\\syde575\\lab1\\assets\\cameraman.tif"
-)
-LENA_ASSET_PATH = (
-    "C:\\Users\\robso_jdkjtyb\\Documents\\GitHub\\syde575\\lab1\\assets\\lena.tif"
-)
-TIRE_ASSET_PATH = (
-    "C:\\Users\\robso_jdkjtyb\\Documents\\GitHub\\syde575\\lab1\\assets\\tire.tif"
-)
+PROJECT_ROOT = Path(__file__).resolve().parent
+ASSETS_DIR = PROJECT_ROOT / "lab1" / "assets"
+
+CAMERAMAN_ASSET_PATH = ASSETS_DIR / "cameraman.tif"
+LENA_ASSET_PATH = ASSETS_DIR / "lena.tif"
+TIRE_ASSET_PATH = ASSETS_DIR / "tire.tif"
 
 # TODO make helper for greyscale images even if they are already greyscale
 
