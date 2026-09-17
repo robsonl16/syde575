@@ -1,0 +1,31 @@
+1. What can you observed about the up-sampled images produced by each of the methods?
+Nearest neighbour seems to be visually grainy. Others feel blurred and lacking detail. The darkest and lightest sections
+of the original image seem to be muted with less contrast
+
+2. How do the different methods compare to each other in terms of PSNR as well as visual
+quality? Why?
+PSNR is lowest with the nearest neighbour method and increases with the bilinear method and further increases with the bicubic
+method. There is a larger difference between bilinear and bicubic than bilinear and nearest neighbour. Visual quality improves
+as PSNR increases
+#TODO Why
+
+3. What parts of the image seem to work well using these digital zooming methods? What parts
+of the image don’t? Why?
+High contrast edges work well and the grey hue is pretty similar. The small detailed sections of the images with texture
+do not show up well with these digital zooming methods. Specifically on the cameraman, the facial details, the camera details,
+and the background 
+
+4. Compare the zooming results between Lena and Cameraman. Which image results in higher
+PSNR? Which image looks better when restored to the original resolution using digital zoom-
+ing methods? Why?
+The Lena image results in a higher PSNR over all digital zooming methods. The Lena image looks better when being restored
+to the original resolution when comaring method to method. This is because the image size is larger to start with. The
+cameraman image is a 256x256 px image and the Lena image is 512x512. When the bilinear reduction of resolution occurs the
+images become 64x64 and 128x128 respectively. Before applying digital zooming, the reduced Lena image has 4 times the data
+than the reduced cameraman image.
+
+5. What does the PSNR tell you about each of the methods? Does it reflect what is observed
+visually?
+The PSNR tells us the quality of the restored image with respect to the original image. The images with higher visual quality
+have higher PSNR values. With this observation it can be determined that the bicubic zooming method produces an image that is
+more similar to the original than the bilinear which is more similar than the nearest neighbour method.
