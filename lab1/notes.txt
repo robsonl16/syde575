@@ -29,3 +29,16 @@ visually?
 The PSNR tells us the quality of the restored image with respect to the original image. The images with higher visual quality
 have higher PSNR values. With this observation it can be determined that the bicubic zooming method produces an image that is
 more similar to the original than the bilinear which is more similar than the nearest neighbour method.
+
+6. The histogram of an image shows the frequency that a certain pixel intensity occurs in an image. The full scale of pixel
+intensities is divided into bins and the pixels of the image are sorted into these bins. The histogram is useful because 
+it allows visual inspection of the pixel intensities found in the image. It can show how strong the highlights or shadows
+or contrast is in an image.
+
+7. The histogram shows a high distribution of pixels with a low or dark intensity. There is the highest peak right at the
+darkest pixels and another smaller peak of pixels that are slightly lighter but still dark <0.1. The distribution across
+the middle of the intensity scale shows a low frequency of intermediate grey intensities which decreases as the intensity
+becomes lighter. There is a small jump at the highest intensity bin for 'white' highlights in the image.
+
+8. Histogram is mirror image of the original histogram. The high frequency of low intensity values is now a high frequency
+of high intensity values. 
