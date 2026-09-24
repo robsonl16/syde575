@@ -42,3 +42,33 @@ becomes lighter. There is a small jump at the highest intensity bin for 'white' 
 
 8. Histogram is mirror image of the original histogram. The high frequency of low intensity values is now a high frequency
 of high intensity values. 
+
+9. The image that is transformed by gamma = 0.5 appears brighter than the original, and the image that is transformed by
+gamma = 1.3 appears darker than the original image.The value of gamma deteremines how the histogram is transformed. When 
+gamma is less than one, the transformation function behaves like a square root transformation and when gamma is greater than 
+one, the transformation function behaves like a quadratic. Applying a square root transformation to the histogram stretches 
+the lower intensity pixels and compresses the low intensity pixels. Appyling a quadratic transformation does the opposite of 
+the square root transformation, instead the low intensity pixels are stretched and the high intensity pixels are compressed. 
+This is why gamma = 0.5 makes the image appear brighter, whereas gamma = 1.3 makes the image appear darker.
+
+10. The image with a transformation of gamma = 0.5 has a broad distribution of pixel intensities whereas the image transformed
+by gamma = 1.3 has a compressed low intenisty distribution. Gamma less than one means that the low intensity pixels get stretched
+and that the high intensity pixels get compressed, vice versa when gamma is greater than one. Since the histogram transformed by
+gamma = 0.5 has a broad distribution the corresponding image is going to have a somewhat of a balance between white and black pixels.
+And since the histogram transformed by gamma = 1.3 is compressed at low intensities, the corresponding image is going to have mainly
+black in the image with low contrast.
+
+11. Since the pixels are mainly distributed on the low intensity side of the histogram, and an "ideal image" has a straight line
+distribution, applying a transformation with gamma = 0.5, distributes more of the pixels from the low intensity side to other parts
+of the histogram to get closer to the "ideal" straight line distribution.
+
+12. The image seems to be the ideal contrast, there is a good balance of high and low intensity pixels which makes it feel
+like the image has more detailed than the others.
+
+13. The intenisty distribution of the pixels across the histogram is balanced. The skimage.exposure.equalize_hist() function
+uses the intensity histogram to calculate a cumulative distribution function (CDF) of that histogram. The CDF is applied as a
+transformation function to remap every pixel intensity to stretch out the concentrated intenisty ranges. This is why the low 
+intensity pixels appeared to be stretched across the rest of the range in the resulting histogram. The intensity distribution 
+of the histogram implies that the image's constrast is balanced.
+
+
