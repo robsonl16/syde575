@@ -71,4 +71,9 @@ transformation function to remap every pixel intensity to stretch out the concen
 intensity pixels appeared to be stretched across the rest of the range in the resulting histogram. The intensity distribution 
 of the histogram implies that the image's constrast is balanced.
 
+Summary: In terms of up-sampling images, bicubic seems to give the best results, whereas nearest-neighbour comes up a little 
+short of bilinear. This is supported both by visually assessing the quality of the image and by comparing the PSNR. For point 
+operations, the transformation that does the best job of spreading the distribution of pixel intensities across the histogram 
+results in the most visually pleasing alteration of the image.
+
 
