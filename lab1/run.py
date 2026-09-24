@@ -15,31 +15,26 @@ TIRE_ASSET_PATH = ASSETS_DIR / "tire.tif"
 
 
 def show_upsampling_comparison(
-    original_images: list[np.ndarray],
-    upsampled_images: list[list[np.ndarray]],
-    image_names: list[str],
-    psnr_values: list[list[float]],
+    original_image: np.ndarray,
+    upsampled_images: list[np.ndarray],
+    image_name: str,
+    psnr_values: list[float],
 ) -> None:
     methods = ["Original", "Nearest Neighbor", "Bilinear", "Bicubic"]
-    figure, axes = plt.subplots(
-        len(original_images), len(methods), figsize=(14, 7), constrained_layout=True
-    )
+    figure, axes = plt.subplots(1, len(methods), figsize=(14, 4), constrained_layout=True)
 
-    for row, (original, reconstructions, image_name, scores) in enumerate(
-        zip(original_images, upsampled_images, image_names, psnr_values)
-    ):
-        images = [original, *reconstructions]
-        for column, (image, method) in enumerate(zip(images, methods)):
-            axes[row, column].imshow(image, cmap="gray", vmin=0, vmax=255)
-            title = (
-                method
-                if column == 0
-                else f"{method}\nPSNR: {scores[column - 1]:.2f} dB"
-            )
-            axes[row, column].set_title(f"{image_name}: {title}")
-            axes[row, column].axis("off")
+    images = [original_image, *upsampled_images]
+    for column, (image, method) in enumerate(zip(images, methods)):
+        axes[column].imshow(image, cmap="gray", vmin=0, vmax=255)
+        title = (
+            method
+            if column == 0
+            else f"{method}\nPSNR: {psnr_values[column - 1]:.2f} dB"
+        )
+        axes[column].set_title(title)
+        axes[column].axis("off")
 
-    figure.suptitle("Original and Upsampled Images", fontsize=16)
+    figure.suptitle(f"{image_name}: Original and Upsampled Images", fontsize=16)
     plt.show()
 
 
@@ -173,24 +168,28 @@ def step_1_digital_zooming():
     lena_psnr_bicubic = PSNR(lena_grey, upsampled_lena_bicubic)
 
     show_upsampling_comparison(
-        original_images=[cameraman_grey, lena_grey],
+        original_image=cameraman_grey,
         upsampled_images=[
-            [
-                upsampled_cameraman_nn,
-                upsampled_cameraman_bilinear,
-                upsampled_cameraman_bicubic,
-            ],
-            [upsampled_lena_nn, upsampled_lena_bilinear, upsampled_lena_bicubic],
+            upsampled_cameraman_nn,
+            upsampled_cameraman_bilinear,
+            upsampled_cameraman_bicubic,
         ],
-        image_names=["Cameraman", "Lena"],
+        image_name="Cameraman",
         psnr_values=[
-            [
-                cameraman_psnr_nn,
-                cameraman_psnr_bilinear,
-                cameraman_psnr_bicubic,
-            ],
-            [lena_psnr_nn, lena_psnr_bilinear, lena_psnr_bicubic],
+            cameraman_psnr_nn,
+            cameraman_psnr_bilinear,
+            cameraman_psnr_bicubic,
         ],
+    )
+    show_upsampling_comparison(
+        original_image=lena_grey,
+        upsampled_images=[
+            upsampled_lena_nn,
+            upsampled_lena_bilinear,
+            upsampled_lena_bicubic,
+        ],
+        image_name="Lena",
+        psnr_values=[lena_psnr_nn, lena_psnr_bilinear, lena_psnr_bicubic],
     )
 
 
