@@ -1,7 +1,24 @@
-1. What did convolving the image with h1 do to the image? Looking at the impulse function,
+1. What did convolving the image with h1 do to the image? Looking at the impulse function, 
 explain why convolving the image with h1 yields such results.
+
+Convolving the image with h1 made the image look more blurry, especially in lena's hair and feathers
+but the background looks very similar after the operation. This happens because we apply a horizontal
+averaging where an output pixel's value is determined by the 6 neighbouring horizontal pixels in the input image. 
+
 2. What did convolving the image with h2 do to the image? Looking at the impulse function,
 explain why convolving the image with h2 yields such results.
+
+Convolving the image with h2 made the image look more blurry, especially in lena's lips, shoulder/chin area, and hat texture
+and the background still looks very similar after the operation. The hair and feathers retain more of their detail than in h1.
+This happens because we apply a vertical averaging where an output pixel's value is determined by the 6 neighbouring vertical
+pixels in the input image. 
+
 3. What did convolving the image with h3 do to the image? Looking at the impulse function,
 explain why convolving the image with h3 yields such results.
+
+Convolving the image with h3 produced an image that is almost entirely dark with highlights at vertical
+edges in the original image. Lena's silohuette is mostly visible with detail in the feathers showing as well.
+This result is caused by the h3 kernel being a horizontal edge detection kernel where the output is a comparison of
+intensities of horizontally neighbouring pixels in the input image
+
 4. Based on these results, what role can convolution perform in the context of image processing?
