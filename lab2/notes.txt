@@ -22,3 +22,26 @@ This result is caused by the h3 kernel being a horizontal edge detection kernel 
 intensities of horizontally neighbouring pixels in the input image
 
 4. Based on these results, what role can convolution perform in the context of image processing?
+
+5. Describe each of the histograms in the context of the corresponding noise models. Why do
+they appear that way?
+
+Gaussian takes the original intensity values and stretches them out in a normal distribution with a peak at each side's intensity value
+TODO Ask chat
+Salt and Pepper retains most of the original pixel values with a small group of randomly selected pixels are substituted for completely black or white (0s or 1s)
+TODO ask chat
+Speckle noise spreads the pixels at each of the starting intensities out evenly over a range that is a certain amount lower and higher than the original value
+The distribution of originally low intensity pixels is narrower than the distribution of originally high intensity pixels
+Since the noise we are adding is multiplied by the pixel intensity, the variance of the speckle 
+TODO Chat help pls
+
+6. Are there visual differences between the noise contaminated images? What are they? Why?
+Gaussian looks very noisy with a mix of pixel intensities and noise everywhere across the image
+
+
+
+7. In the speckle noise case, what is the underlying distribution used? Can you tell from the
+histogram? How?
+
+8. In the speckle noise case, you will notice that the peaks of the histogram are no longer of the
+same height as they were in the original image. Also, th
