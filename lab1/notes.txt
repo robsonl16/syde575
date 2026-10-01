@@ -1,0 +1,79 @@
+1. What can you observed about the up-sampled images produced by each of the methods?
+Nearest neighbour seems to be visually grainy. Others feel blurred and lacking detail. The darkest and lightest sections
+of the original image seem to be muted with less contrast
+
+2. How do the different methods compare to each other in terms of PSNR as well as visual
+quality? Why?
+PSNR is lowest with the nearest neighbour method and increases with the bilinear method and further increases with the bicubic
+method. There is a larger difference between bilinear and bicubic than bilinear and nearest neighbour. Visual quality improves
+as PSNR increases
+#TODO Why
+
+3. What parts of the image seem to work well using these digital zooming methods? What parts
+of the image don’t? Why?
+High contrast edges work well and the grey hue is pretty similar. The small detailed sections of the images with texture
+do not show up well with these digital zooming methods. Specifically on the cameraman, the facial details, the camera details,
+and the background 
+
+4. Compare the zooming results between Lena and Cameraman. Which image results in higher
+PSNR? Which image looks better when restored to the original resolution using digital zoom-
+ing methods? Why?
+The Lena image results in a higher PSNR over all digital zooming methods. The Lena image looks better when being restored
+to the original resolution when comaring method to method. This is because the image size is larger to start with. The
+cameraman image is a 256x256 px image and the Lena image is 512x512. When the bilinear reduction of resolution occurs the
+images become 64x64 and 128x128 respectively. Before applying digital zooming, the reduced Lena image has 4 times the data
+than the reduced cameraman image.
+
+5. What does the PSNR tell you about each of the methods? Does it reflect what is observed
+visually?
+The PSNR tells us the quality of the restored image with respect to the original image. The images with higher visual quality
+have higher PSNR values. With this observation it can be determined that the bicubic zooming method produces an image that is
+more similar to the original than the bilinear which is more similar than the nearest neighbour method.
+
+6. The histogram of an image shows the frequency that a certain pixel intensity occurs in an image. The full scale of pixel
+intensities is divided into bins and the pixels of the image are sorted into these bins. The histogram is useful because 
+it allows visual inspection of the pixel intensities found in the image. It can show how strong the highlights or shadows
+or contrast is in an image.
+
+7. The histogram shows a high distribution of pixels with a low or dark intensity. There is the highest peak right at the
+darkest pixels and another smaller peak of pixels that are slightly lighter but still dark <0.1. The distribution across
+the middle of the intensity scale shows a low frequency of intermediate grey intensities which decreases as the intensity
+becomes lighter. There is a small jump at the highest intensity bin for 'white' highlights in the image.
+
+8. Histogram is mirror image of the original histogram. The high frequency of low intensity values is now a high frequency
+of high intensity values. 
+
+9. The image that is transformed by gamma = 0.5 appears brighter than the original, and the image that is transformed by
+gamma = 1.3 appears darker than the original image.The value of gamma deteremines how the histogram is transformed. When 
+gamma is less than one, the transformation function behaves like a square root transformation and when gamma is greater than 
+one, the transformation function behaves like a quadratic. Applying a square root transformation to the histogram stretches 
+the lower intensity pixels and compresses the low intensity pixels. Appyling a quadratic transformation does the opposite of 
+the square root transformation, instead the low intensity pixels are stretched and the high intensity pixels are compressed. 
+This is why gamma = 0.5 makes the image appear brighter, whereas gamma = 1.3 makes the image appear darker.
+
+10. The image with a transformation of gamma = 0.5 has a broad distribution of pixel intensities whereas the image transformed
+by gamma = 1.3 has a compressed low intenisty distribution. Gamma less than one means that the low intensity pixels get stretched
+and that the high intensity pixels get compressed, vice versa when gamma is greater than one. Since the histogram transformed by
+gamma = 0.5 has a broad distribution the corresponding image is going to have a somewhat of a balance between white and black pixels.
+And since the histogram transformed by gamma = 1.3 is compressed at low intensities, the corresponding image is going to have mainly
+black in the image with low contrast.
+
+11. Since the pixels are mainly distributed on the low intensity side of the histogram, and an "ideal image" has a straight line
+distribution, applying a transformation with gamma = 0.5, distributes more of the pixels from the low intensity side to other parts
+of the histogram to get closer to the "ideal" straight line distribution.
+
+12. The image seems to be the ideal contrast, there is a good balance of high and low intensity pixels which makes it feel
+like the image has more detailed than the others.
+
+13. The intenisty distribution of the pixels across the histogram is balanced. The skimage.exposure.equalize_hist() function
+uses the intensity histogram to calculate a cumulative distribution function (CDF) of that histogram. The CDF is applied as a
+transformation function to remap every pixel intensity to stretch out the concentrated intenisty ranges. This is why the low 
+intensity pixels appeared to be stretched across the rest of the range in the resulting histogram. The intensity distribution 
+of the histogram implies that the image's constrast is balanced.
+
+Summary: In terms of up-sampling images, bicubic seems to give the best results, whereas nearest-neighbour comes up a little 
+short of bilinear. This is supported both by visually assessing the quality of the image and by comparing the PSNR. For point 
+operations, the transformation that does the best job of spreading the distribution of pixel intensities across the histogram 
+results in the most visually pleasing alteration of the image.
+
+
