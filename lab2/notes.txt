@@ -1,0 +1,7 @@
+1. What did convolving the image with h1 do to the image? Looking at the impulse function,
+explain why convolving the image with h1 yields such results.
+2. What did convolving the image with h2 do to the image? Looking at the impulse function,
+explain why convolving the image with h2 yields such results.
+3. What did convolving the image with h3 do to the image? Looking at the impulse function,
+explain why convolving the image with h3 yields such results.
+4. Based on these results, what role can convolution perform in the context of image processing?
