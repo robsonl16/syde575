@@ -45,3 +45,28 @@ histogram? How?
 
 8. In the speckle noise case, you will notice that the peaks of the histogram are no longer of the
 same height as they were in the original image. Also, th
+
+9. Compare the visual difference between the noisy image and the denoised image. How well
+did it work? Why? Did the PSNR decrease?
+The noisy image looks like the original image, but with static added. Like colour intensities that are a bit out of place.
+Areas on the image that would be flat, seem to have texture, however textured areas retain a lot of the textures from the original image.
+For the filtered image it removes that static look and brings back some of the smoothness of the original image. However,
+some of the contrast is lost and the intensities appear more muted, especially in Lena's hair and feathers. This is because
+random noise was added that retains a similar intensity to the original image, then 3x3 patches are averaged to filter out
+the speckles, while also reducing some of the contrast. The PSNR in the noisy image is 75.12 whereas the PSNR in the filtered
+image is 79.75, meaning that the filtering improves the quality of the image. 
+
+10. Compare the histograms of the noise-free, noisy, and denoised images. What happened?
+Why?
+The histogram of the noise-free image contains peaks of certain intensities like ~0.15 ~0.35 ~0.5 ~0.6 and ~0.8 where certain
+features in the image that have the same colour, produce the same or similar intensity pixels. When the gaussian noise is added,
+the histogram smooths out much of the peaks, adding pixels of many intensities which makes the histogram look more like a gaussian
+distribution. After applying the averaging filter, the histogram transforms back closer to the original image with peaks at similar
+intensities, however less drastic of peaks and troughs.
+
+11. Based on visual quality of the denoised image, what are the benefits and drawbacks associated
+with the average filter
+Based on the visual quality of the denoised image, the benefits of the average filter is that it can remove a large amount
+of speckling from images with the caveat that contrast is lost between areas of high pixel intensity next to areas of low
+pixel intensity, making the image look blurry.
+
