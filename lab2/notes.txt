@@ -70,3 +70,24 @@ Based on the visual quality of the denoised image, the benefits of the average f
 of speckling from images with the caveat that contrast is lost between areas of high pixel intensity next to areas of low
 pixel intensity, making the image look blurry.
 
+12. Compare the visual difference between the denoised image from the 7×7 filtering kernel and
+the denoised image from the 3×3 filtering kernel. Are there any differences? Why? Did the
+PSNR decrease? Why?
+The 7x7 filtered kernel is very blurry compared to the 3x3 filtered kernel, losing tons of detail from the hair and feathers.
+There is little to no speckle in the 7x7 image where there is still a little in the 3x3 image. This is because we are averaging
+49 pixel values instead of 9 pixel values, which smooths and removes speckles, but also removes edges and high contrast areas. 
+The PSNR decreased with the 7x7 filtering which is because the patch is too large where we are losing information and increasing
+MSE overall in the image. This filter not only removes the noise but also a lot of data from the image, creating a less accurate
+image as compared to the original than the smaller averaging filter.
+
+13. Compare the histograms of the two denoised images. What are the differences? Why?
+The histogram of the 7x7 denoised image shows higher peaks and lower troughs for pixel counts at certain intensities.
+This is because large areas of similar pixel intensities will converge on one or two pixel intensities due to the large amount
+of pixels being averaged. Areas in the background of the image that started as similar intensities next to one another look
+flat and the same intensity in the 7x7 denoised image because of the size of the patch.
+
+14. Based on visual quality of the denoised image, what are the benefits and drawbacks associated
+with using a larger window size?
+A benefit of using a larger window size can remove more noise than the smaller window can, however a drawback is that it
+significantly reduces the detail and contrast in the image.
+
