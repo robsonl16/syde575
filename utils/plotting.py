@@ -66,6 +66,34 @@ def show_filter_kernels(
     plt.show()
 
 
+def show_convolution_comparison(
+    original_image: np.ndarray,
+    horizontal_average: np.ndarray,
+    vertical_average: np.ndarray,
+    horizontal_difference: np.ndarray,
+    image_name: str,
+    output_path: Path | None = None,
+) -> None:
+    """Compare the original image with three convolution results."""
+    figure, axes = plt.subplots(2, 2, figsize=(10, 10), constrained_layout=True)
+    image_panels = (
+        (original_image, "Original"),
+        (horizontal_average, "h1: Horizontal average (1×6)"),
+        (vertical_average, "h2: Vertical average (6×1)"),
+        (horizontal_difference, "h3: Horizontal edge filter"),
+    )
+    for axis, (image, title) in zip(axes.flat, image_panels):
+        axis.imshow(image, cmap="gray", vmin=0, vmax=1)
+        axis.set_title(title)
+        axis.axis("off")
+
+    figure.suptitle(f"{image_name}: Discrete Convolution")
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        figure.savefig(output_path, dpi=200)
+    plt.show()
+
+
 def show_upsampling_comparison(
     original_image: np.ndarray,
     upsampled_images: list[np.ndarray],

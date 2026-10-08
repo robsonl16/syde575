@@ -6,9 +6,9 @@ from scipy import ndimage, signal
 from skimage import color, exposure, io, transform, util
 
 from utils.plotting import (
+    show_convolution_comparison,
     show_filter_kernels,
     show_image_and_histogram,
-    show_upsampling_comparison,
 )
 from utils.psnr import PSNR
 
@@ -41,12 +41,13 @@ def step_1_discrete_convolution():
     lena_h2 = signal.convolve2d(lena_gray, h2, mode="same", boundary="symm")
     lena_h3 = signal.convolve2d(lena_gray, h3, mode="same", boundary="symm")
 
-    show_upsampling_comparison(
+    show_convolution_comparison(
         original_image=lena_gray,
-        upsampled_images=[lena_h1, lena_h2, lena_h3],
+        horizontal_average=lena_h1,
+        vertical_average=lena_h2,
+        horizontal_difference=lena_h3,
         image_name="Lena",
-        psnr_values=[0, 0, 0],
-        intensity_range=(0, 1),
+        output_path=PROJECT_ROOT / "lab2" / "assets" / "discrete_convolution.png",
     )
 
 
