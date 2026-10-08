@@ -115,3 +115,10 @@ if __name__ == "__main__":
         title=f"Gaussian Filtered Salt and Pepper Noise (PSNR: {gaussian_filtered_salt_pepper_psnr:.2f})",
         intensity_range=(0, 1),
     )
+    median_filtered_salt_pepper = ndimage.median_filter(lena_salt_pepper_noise, size=3)
+    median_filtered_salt_pepper_psnr = PSNR(lena_gray, median_filtered_salt_pepper)
+    show_image_and_histogram(
+        median_filtered_salt_pepper,
+        title=f"Median Filtered Salt and Pepper Noise (PSNR: {median_filtered_salt_pepper_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
