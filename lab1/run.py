@@ -210,7 +210,7 @@ def step_5_histogram_equalization():
     )
 
 
-def run():
+def run_lab_1():
     step_1_digital_zooming()
     step_2_tire_image_and_histogram()
     step_3_negative_transform()
