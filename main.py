@@ -95,3 +95,23 @@ if __name__ == "__main__":
         title=f"Gaussian Filtered Image (PSNR: {gaussian_filtered_psnr:.2f})",
         intensity_range=(0, 1),
     )
+
+    lena_salt_pepper_noise = util.random_noise(lena_gray, mode="s&p", amount=0.05)
+    average_filtered_salt_pepper = ndimage.convolve(
+        lena_salt_pepper_noise, bigger_kernel
+    )
+    salt_pepper_filtered_psnr = PSNR(lena_gray, average_filtered_salt_pepper)
+    show_image_and_histogram(
+        average_filtered_salt_pepper,
+        title=f"Average Filtered Salt and Pepper Noise (PSNR: {salt_pepper_filtered_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
+    gaussian_filtered_salt_pepper = ndimage.gaussian_filter(
+        lena_salt_pepper_noise, sigma=1.0, radius=3
+    )
+    gaussian_filtered_salt_pepper_psnr = PSNR(lena_gray, gaussian_filtered_salt_pepper)
+    show_image_and_histogram(
+        gaussian_filtered_salt_pepper,
+        title=f"Gaussian Filtered Salt and Pepper Noise (PSNR: {gaussian_filtered_salt_pepper_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
