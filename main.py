@@ -27,6 +27,8 @@ if __name__ == "__main__":
 
     # Part 1
     lena = io.imread(LENA_ASSET_PATH)
+    cameraman = io.imread(CAMERAMAN_ASSET_PATH)
+    cameraman_grey = util.img_as_float(cameraman)  # uint8 -> floats in [0, 1]
 
     lena_gray = color.rgb2gray(np.array(lena))
 
@@ -85,5 +87,83 @@ if __name__ == "__main__":
     show_image_and_histogram(
         more_avg_filtered,
         title=f"Average Filtered Image (PSNR: {filtered_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
+    size = 7
+    sigma = 1
+
+    ax = np.arange(size) - (size - 1) / 2  # [-3, -2, -1, 0, 1, 2, 3]
+    xx, yy = np.meshgrid(ax, ax)
+
+    k = np.exp(-(xx**2 + yy**2) / (2 * sigma**2))
+    k = k / k.sum()  # normalize so it sums to 1
+
+    np.set_printoptions(precision=5, suppress=True)
+    size = 7
+    sigma = 1
+
+    ax = np.arange(size) - (size - 1) / 2  # [-3, -2, -1, 0, 1, 2, 3]
+    xx, yy = np.meshgrid(ax, ax)
+
+    k = np.exp(-(xx**2 + yy**2) / (2 * sigma**2))
+    k = k / k.sum()  # normalize so it sums to 1
+
+    np.set_printoptions(precision=5, suppress=True)
+    gaus = ndimage.convolve(gaussian_noise_p3, k)
+    gaus_psnr = PSNR(lena_gray, gaus)
+    show_image_and_histogram(
+        gaus,
+        title=f"Gaussian Filtered Image (PSNR: {gaus_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
+
+    salt_pepper_lena = util.random_noise(lena_gray, mode="s&p", amount=0.05)
+    show_image_and_histogram(
+        salt_pepper_lena, title="Salt and Pepper Noise", intensity_range=(0, 1)
+    )
+
+    salt_gaus = ndimage.convolve(gaussian_noise_p3, k)
+    salt_gaus_psnr = PSNR(salt_pepper_lena, salt_gaus)
+    show_image_and_histogram(
+        salt_gaus,
+        title=f"Salt Gaus Filtered Image (PSNR: {salt_gaus_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
+    # med_kernel = ndimage.median_filter(
+    #     input,
+    #     size=3,
+    #     footprint=None,
+    #     output=None,
+    #     mode="reflect",
+    #     cval=0.0,
+    #     origin=0,
+    #     axes=None,
+    # )
+    # med = ndimage.convolve(gaussian_noise_p3, med_kernel)
+    # med_lena_psnr = PSNR(lena_gray, med)
+    # show_image_and_histogram(
+    #     med,
+    #     title=f"Median Filter (PSNR: {med_lena_psnr:.2f})",
+    #     intensity_range=(0, 1),
+    # )
+
+    med = ndimage.median_filter(gaussian_noise_p3, size=3)
+    med_lena_psnr = PSNR(lena_gray, med)
+    show_image_and_histogram(
+        med,
+        title=f"Median Filter (PSNR: {med_lena_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
+
+    sharp = ndimage.convolve(cameraman_grey, k)
+    show_image_and_histogram(
+        sharp,
+        title="Sharpened Image)",
+        intensity_range=(0, 1),
+    )
+    gaus_sub = cameraman_grey - sharp
+    show_image_and_histogram(
+        gaus_sub,
+        title="Gaussian Subtracted Image)",
         intensity_range=(0, 1),
     )
