@@ -5,7 +5,8 @@ import numpy as np
 from scipy import ndimage, signal
 from skimage import color, exposure, io, transform, util
 
-from lab1.run import run, show_upsampling_comparison, show_image_and_histogram
+from lab1.run import run
+from utils.plotting import show_image_and_histogram, show_upsampling_comparison
 from utils.psnr import PSNR
 
 PROJECT_ROOT = Path(__file__).resolve().parent
