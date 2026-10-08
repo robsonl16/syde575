@@ -36,6 +36,7 @@ def show_upsampling_comparison(
     upsampled_images: list[np.ndarray],
     image_name: str,
     psnr_values: list[float],
+    intensity_range: tuple[float, float] | None = [0, 255],
 ) -> None:
     methods = ["Original", "Nearest Neighbor", "Bilinear", "Bicubic"]
     figure, axes = plt.subplots(
@@ -44,7 +45,9 @@ def show_upsampling_comparison(
 
     images = [original_image, *upsampled_images]
     for column, (image, method) in enumerate(zip(images, methods)):
-        axes[column].imshow(image, cmap="gray", vmin=0, vmax=255)
+        axes[column].imshow(
+            image, cmap="gray", vmin=intensity_range[0], vmax=intensity_range[1]
+        )
         title = (
             method
             if column == 0
