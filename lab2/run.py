@@ -5,7 +5,11 @@ import numpy as np
 from scipy import ndimage, signal
 from skimage import color, exposure, io, transform, util
 
-from utils.plotting import show_image_and_histogram, show_upsampling_comparison
+from utils.plotting import (
+    show_filter_kernels,
+    show_image_and_histogram,
+    show_upsampling_comparison,
+)
 from utils.psnr import PSNR
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -89,6 +93,18 @@ def step_3_spatial_filters():
     )
 
     bigger_kernel = np.ones((7, 7)) / (7.0 * 7.0)
+    gaussian_kernel = np.zeros((7, 7))
+    gaussian_kernel[3, 3] = 1.0
+    gaussian_kernel = ndimage.gaussian_filter(gaussian_kernel, sigma=1.0, radius=3)
+    show_filter_kernels(
+        {
+            "7×7 Gaussian kernel (σ=1)": gaussian_kernel,
+        },
+        output_path=PROJECT_ROOT
+        / "lab2"
+        / "assets"
+        / "7_by_7_gaussian_filter_kernel.png",
+    )
     more_avg_filtered = ndimage.convolve(gaussian_noise_p3, bigger_kernel)
     filtered_psnr = PSNR(lena_gray, more_avg_filtered)
     show_image_and_histogram(
@@ -106,6 +122,11 @@ def step_3_spatial_filters():
     )
 
     lena_salt_pepper_noise = util.random_noise(lena_gray, mode="s&p", amount=0.05)
+    show_image_and_histogram(
+        lena_salt_pepper_noise,
+        title="Salt and Pepper Noise",
+        intensity_range=(0, 1),
+    )
     average_filtered_salt_pepper = ndimage.convolve(
         lena_salt_pepper_noise, bigger_kernel
     )

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -28,6 +30,39 @@ def show_image_and_histogram(
     histogram_axis.set_xlabel("Intensity")
     histogram_axis.set_ylabel("Pixel count")
     histogram_axis.set_xlim(intensity_range)
+    plt.show()
+
+
+def show_filter_kernels(
+    kernels: dict[str, np.ndarray], output_path: Path | None = None
+) -> None:
+    """Display filter weights as annotated heatmaps."""
+    figure, axes = plt.subplots(
+        1, len(kernels), figsize=(6 * len(kernels), 5), constrained_layout=True
+    )
+    for axis, (title, kernel) in zip(np.atleast_1d(axes), kernels.items()):
+        image = axis.imshow(kernel, cmap="Blues", vmin=0)
+        center_row, center_col = np.array(kernel.shape) // 2
+        axis.set_xticks(
+            range(kernel.shape[1]), range(-center_col, kernel.shape[1] - center_col)
+        )
+        axis.set_yticks(
+            range(kernel.shape[0]), range(-center_row, kernel.shape[0] - center_row)
+        )
+        axis.set_xlabel("Horizontal offset (pixels)")
+        axis.set_ylabel("Vertical offset (pixels)")
+        axis.set_title(title)
+        for row in range(kernel.shape[0]):
+            for col in range(kernel.shape[1]):
+                axis.text(
+                    col, row, f"{kernel[row, col]:.3g}",
+                    ha="center", va="center", fontsize=7,
+                    color="white" if kernel[row, col] > kernel.max() / 2 else "black",
+                )
+        figure.colorbar(image, ax=axis, label="Weight", shrink=0.8)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        figure.savefig(output_path, dpi=200)
     plt.show()
 
 
