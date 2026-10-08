@@ -9,7 +9,7 @@ from lab1.run import run, show_upsampling_comparison, show_image_and_histogram
 from utils.psnr import PSNR
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-ASSETS_DIR = PROJECT_ROOT / "lab1" / "assets"
+ASSETS_DIR = PROJECT_ROOT / "assets"
 
 CAMERAMAN_ASSET_PATH = ASSETS_DIR / "cameraman.tif"
 LENA_ASSET_PATH = ASSETS_DIR / "lena.tif"
