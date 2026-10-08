@@ -87,3 +87,11 @@ if __name__ == "__main__":
         title=f"Average Filtered Image (PSNR: {filtered_psnr:.2f})",
         intensity_range=(0, 1),
     )
+
+    gaussian_filtered = ndimage.gaussian_filter(gaussian_noise_p3, sigma=1.0, radius=3)
+    gaussian_filtered_psnr = PSNR(lena_gray, gaussian_filtered)
+    show_image_and_histogram(
+        gaussian_filtered,
+        title=f"Gaussian Filtered Image (PSNR: {gaussian_filtered_psnr:.2f})",
+        intensity_range=(0, 1),
+    )
