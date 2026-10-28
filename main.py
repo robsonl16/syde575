@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import matplotlib.pyplot as plt
-import skimage
+from skimage import io, transform, color
 
 from lab1.run import run_lab_1
 from lab2.run import run_lab_2
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     f[:, 107:148] = 1
 
     # Rotate the image by 45 degrees
-    rotated_f = skimage.transform.rotate(f, 45)
+    rotated_f = transform.rotate(f, 45)
 
     # Use 2D fourier transform, returns complex array
     fourier_transformed = np.fft.fft2(f)
@@ -41,4 +41,36 @@ if __name__ == "__main__":
     plt.imshow(rotated_f, cmap="gray")
     plt.show()
     plt.imshow(magnitude_spectrum_rotated, cmap="gray")
+    plt.show()
+
+    # Load Lena image
+    lena = io.imread(LENA_ASSET_PATH)
+    lena_gray = color.rgb2gray(np.array(lena))
+
+    # Fourier transform
+    fourier_transformed_lena = np.fft.fft2(lena_gray)
+
+    # Shift to center
+    fourier_transformed_lena_shifted = np.fft.fftshift(fourier_transformed_lena)
+
+    # Get the magnitude and phase
+    fourier_transformed_lena_magnitude = np.abs(fourier_transformed_lena_shifted)
+    fourier_transformed_lena_phase = (
+        fourier_transformed_lena_shifted / fourier_transformed_lena_magnitude
+    )
+
+    plt.imshow(fourier_transformed_lena_magnitude, cmap="gray")
+    plt.show()
+    plt.imshow(np.angle(fourier_transformed_lena_phase), cmap="gray")
+    plt.show()
+
+    # Inverse Fourier transform to reconstruct the image from amplitude and phase
+    unshifted_magnitude = np.fft.ifftshift(fourier_transformed_lena_magnitude)
+    unshifted_phase = np.fft.ifftshift(fourier_transformed_lena_phase)
+    inverse_amplitude = np.abs(np.fft.ifft2(unshifted_magnitude))
+    inverse_phase = np.abs(np.fft.ifft2(unshifted_phase))
+
+    plt.imshow(np.log1p(inverse_amplitude), cmap="gray")
+    plt.show()
+    plt.imshow(inverse_phase, cmap="gray")
     plt.show()
