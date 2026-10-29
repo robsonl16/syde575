@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import matplotlib.pyplot as plt
-from skimage import io, transform, color
+from skimage import io, transform, color, util
 
 from lab1.run import run_lab_1
 from lab2.run import run_lab_2
@@ -37,7 +37,10 @@ if __name__ == "__main__":
     magnitude_spectrum = np.abs(fourier_transformed_shifted)
     magnitude_spectrum_rotated = np.abs(rotated_fourier_transformed_shifted)
 
+    plt.imshow(f, cmap="gray")
+    plt.show()
     plt.imshow(magnitude_spectrum, cmap="gray")
+    plt.show()
     plt.imshow(rotated_f, cmap="gray")
     plt.show()
     plt.imshow(magnitude_spectrum_rotated, cmap="gray")
@@ -59,6 +62,9 @@ if __name__ == "__main__":
         fourier_transformed_lena_shifted / fourier_transformed_lena_magnitude
     )
 
+    print(fourier_transformed_lena_magnitude)
+    print(fourier_transformed_lena_phase)
+
     plt.imshow(fourier_transformed_lena_magnitude, cmap="gray")
     plt.show()
     plt.imshow(np.angle(fourier_transformed_lena_phase), cmap="gray")
@@ -70,7 +76,12 @@ if __name__ == "__main__":
     inverse_amplitude = np.abs(np.fft.ifft2(unshifted_magnitude))
     inverse_phase = np.abs(np.fft.ifft2(unshifted_phase))
 
+    plt.imshow(lena_gray, cmap="gray")
+    plt.show()
     plt.imshow(np.log1p(inverse_amplitude), cmap="gray")
     plt.show()
     plt.imshow(inverse_phase, cmap="gray")
     plt.show()
+
+# Part 2: Noise Reduction in the Frequency Domain:
+gaussian_noise_lena = util.random_noise(lena_gray, mode="gaussian", mean=0, var=0.005)
