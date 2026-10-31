@@ -1,0 +1,9 @@
+1. What can you say about the general distribution of energy in the Fourier spectra? Why?
+
+Most of the energy is distributed in the middle of the Fourier spectra with some low frequency energy
+distributed along the horizontal axis. This is because when we travel across the image horizontally
+we see this change in pixel intensity and when we travel across the image vertically there is no change in
+pixel intensity which is why there is no energy along the vertical axis in the fourier spectra.
+
+2. What characteristics about the test image can you infer from the Fourier spectra?
+
