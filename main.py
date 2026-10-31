@@ -3,9 +3,11 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io, transform, color, util
+from skimage.morphology import disk
 
 from lab1.run import run_lab_1
 from lab2.run import run_lab_2
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 ASSETS_DIR = PROJECT_ROOT / "assets"
@@ -83,5 +85,38 @@ if __name__ == "__main__":
     plt.imshow(inverse_phase, cmap="gray")
     plt.show()
 
-# Part 2: Noise Reduction in the Frequency Domain:
-gaussian_noise_lena = util.random_noise(lena_gray, mode="gaussian", mean=0, var=0.005)
+    # Part 2-1: Noise Reduction in the Frequency Domain:
+    # I'm not sure if these plots look right
+
+    gaussian_noise_lena = util.random_noise(
+        lena_gray, mode="gaussian", mean=0, var=0.005
+    )
+    transformed_gaussian_noise_lena = np.fft.fft2(gaussian_noise_lena)
+    transformed_lena = np.fft.fft2(lena_gray)
+
+    transformed_gaussian_noise_lena_shifted = np.fft.fftshift(
+        transformed_gaussian_noise_lena
+    )
+    transformed_lena_shifted = np.fft.fftshift(transformed_lena)
+
+    gaussian_noise_lena_magnitude = np.abs(transformed_gaussian_noise_lena_shifted)
+    lena_magnitude = np.abs(transformed_lena_shifted)
+
+    plt.imshow(np.log(1 + gaussian_noise_lena_magnitude), cmap="gray")
+    plt.show()
+    plt.imshow(np.log(1 + lena_magnitude), cmap="gray")
+    plt.show()
+
+    # Part 2-2:
+
+    r = 60
+    h = disk(r)  # shape (2r+1, 2r+1)
+
+    rows, cols = lena_gray.shape  # filter must match the image size
+    h_freq = np.zeros((rows, cols))
+
+    cy, cx = rows // 2, cols // 2
+    h_freq[cy - r : cy + r + 1, cx - r : cx + r + 1] = h
+
+    plt.imshow(h_freq, cmap="gray")
+    plt.show()
