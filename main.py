@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io, transform, color, util
 from skimage.morphology import disk
+from scipy.ndimage import gaussian_filter
 
 from lab1.run import run_lab_1
 from lab2.run import run_lab_2
@@ -14,6 +15,27 @@ ASSETS_DIR = PROJECT_ROOT / "assets"
 
 CAMERAMAN_ASSET_PATH = ASSETS_DIR / "cameraman.tif"
 LENA_ASSET_PATH = ASSETS_DIR / "lena.tif"
+NOISY_IMAGE_ASSET_PATH = ASSETS_DIR / "frequnoisy.tif"
+
+
+def spectrum(image):
+    return np.fft.fftshift(np.fft.fft2(image))
+
+
+def show(images, titles, cmap="gray", size=4, vrange=None):
+    # Plot a row of images side by side, each with a title.
+    n = len(images)
+    fig, axes = plt.subplots(1, n, figsize=(size * n, size))
+    axes = np.atleast_1d(axes)
+    for ax, im, t in zip(axes, images, titles):
+        if vrange is None:
+            ax.imshow(im, cmap=cmap)
+        else:
+            ax.imshow(im, cmap=cmap, vmin=vrange[0], vmax=vrange[1])
+        ax.set_title(t)
+        ax.axis("off")
+    plt.tight_layout()
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -28,25 +50,22 @@ if __name__ == "__main__":
     rotated_f = transform.rotate(f, 45)
 
     # Use 2D fourier transform, returns complex array
-    fourier_transformed = np.fft.fft2(f)
-    rotated_fourier_transformed = np.fft.fft2(rotated_f)
-    # Need to use this function to shift the zero frequency component to the center of the spectrum
-    # Not sure why the first fourier transform is not centered, but this is what the documentation says to do
-    fourier_transformed_shifted = np.fft.fftshift(fourier_transformed)
-    rotated_fourier_transformed_shifted = np.fft.fftshift(rotated_fourier_transformed)
+    fourier_transformed = spectrum(f)
+    rotated_fourier_transformed = spectrum(rotated_f)
 
     # Convert the complex numbers to magnitude spectrum
-    magnitude_spectrum = np.abs(fourier_transformed_shifted)
-    magnitude_spectrum_rotated = np.abs(rotated_fourier_transformed_shifted)
 
-    plt.imshow(f, cmap="gray")
-    plt.show()
-    plt.imshow(magnitude_spectrum, cmap="gray")
-    plt.show()
-    plt.imshow(rotated_f, cmap="gray")
-    plt.show()
-    plt.imshow(magnitude_spectrum_rotated, cmap="gray")
-    plt.show()
+    show(
+        [f, np.abs(fourier_transformed)],
+        [
+            "Test image f",
+            "Fourier spectrum",
+        ],
+    )
+    show(
+        [rotated_f, np.abs(rotated_fourier_transformed)],
+        ["Test image rotated 45°", "Fourier spectrum of rotated image"],
+    )
 
     # Load Lena image
     lena = io.imread(LENA_ASSET_PATH)
@@ -55,35 +74,27 @@ if __name__ == "__main__":
     # Fourier transform
     fourier_transformed_lena = np.fft.fft2(lena_gray)
 
-    # Shift to center
-    fourier_transformed_lena_shifted = np.fft.fftshift(fourier_transformed_lena)
-
     # Get the magnitude and phase
-    fourier_transformed_lena_magnitude = np.abs(fourier_transformed_lena_shifted)
+    fourier_transformed_lena_magnitude = np.abs(fourier_transformed_lena)
     fourier_transformed_lena_phase = (
-        fourier_transformed_lena_shifted / fourier_transformed_lena_magnitude
+        fourier_transformed_lena / fourier_transformed_lena_magnitude
     )
 
-    print(fourier_transformed_lena_magnitude)
-    print(fourier_transformed_lena_phase)
+    reconstructed_amplitude = np.fft.ifft2(fourier_transformed_lena_magnitude)
+    reconstructed_phase = np.fft.ifft2(fourier_transformed_lena_phase)
 
-    plt.imshow(fourier_transformed_lena_magnitude, cmap="gray")
-    plt.show()
-    plt.imshow(np.angle(fourier_transformed_lena_phase), cmap="gray")
-    plt.show()
-
-    # Inverse Fourier transform to reconstruct the image from amplitude and phase
-    unshifted_magnitude = np.fft.ifftshift(fourier_transformed_lena_magnitude)
-    unshifted_phase = np.fft.ifftshift(fourier_transformed_lena_phase)
-    inverse_amplitude = np.abs(np.fft.ifft2(unshifted_magnitude))
-    inverse_phase = np.abs(np.fft.ifft2(unshifted_phase))
-
-    plt.imshow(lena_gray, cmap="gray")
-    plt.show()
-    plt.imshow(np.log1p(inverse_amplitude), cmap="gray")
-    plt.show()
-    plt.imshow(inverse_phase, cmap="gray")
-    plt.show()
+    show(
+        [
+            lena_gray,
+            np.log1p(np.abs(reconstructed_amplitude)),
+            np.abs(reconstructed_phase),
+        ],
+        [
+            "Original (grayscale)",
+            "Amplitude reconstructed",
+            "Phase reconstructed",
+        ],
+    )
 
     # Part 2-1: Noise Reduction in the Frequency Domain:
     # I'm not sure if these plots look right
@@ -91,21 +102,16 @@ if __name__ == "__main__":
     gaussian_noise_lena = util.random_noise(
         lena_gray, mode="gaussian", mean=0, var=0.005
     )
-    transformed_gaussian_noise_lena = np.fft.fft2(gaussian_noise_lena)
-    transformed_lena = np.fft.fft2(lena_gray)
+    transformed_gaussian_noise_lena = spectrum(gaussian_noise_lena)
+    transformed_lena = spectrum(lena_gray)
 
-    transformed_gaussian_noise_lena_shifted = np.fft.fftshift(
-        transformed_gaussian_noise_lena
+    show(
+        [
+            np.log1p(np.abs(transformed_lena)),
+            np.log1p(np.abs(transformed_gaussian_noise_lena)),
+        ],
+        ["Original Lena", "Gaussian noise Lena"],
     )
-    transformed_lena_shifted = np.fft.fftshift(transformed_lena)
-
-    gaussian_noise_lena_magnitude = np.abs(transformed_gaussian_noise_lena_shifted)
-    lena_magnitude = np.abs(transformed_lena_shifted)
-
-    plt.imshow(np.log(1 + gaussian_noise_lena_magnitude), cmap="gray")
-    plt.show()
-    plt.imshow(np.log(1 + lena_magnitude), cmap="gray")
-    plt.show()
 
     # Part 2-2:
 
@@ -120,3 +126,57 @@ if __name__ == "__main__":
 
     plt.imshow(h_freq, cmap="gray")
     plt.show()
+
+    filtered_lena_fourier = h_freq * transformed_gaussian_noise_lena
+    filtered_lena = np.clip(
+        np.fft.ifft2(np.fft.ifftshift(filtered_lena_fourier)).real, 0, 1
+    )
+    show(
+        [lena_gray, gaussian_noise_lena, filtered_lena],
+        ["Original Lena", "Gaussian noise Lena", "Filtered Lena"],
+    )
+
+    r = 20
+    h = disk(r)  # shape (2r+1, 2r+1)
+
+    rows, cols = lena_gray.shape  # filter must match the image size
+    h_freq = np.zeros((rows, cols))
+
+    cy, cx = rows // 2, cols // 2
+    h_freq[cy - r : cy + r + 1, cx - r : cx + r + 1] = h
+
+    filtered_lena_fourier = h_freq * transformed_gaussian_noise_lena
+    filtered_lena = np.clip(
+        np.fft.ifft2(np.fft.ifftshift(filtered_lena_fourier)).real, 0, 1
+    )
+    show(
+        [lena_gray, gaussian_noise_lena, filtered_lena],
+        ["Original Lena", "Gaussian noise Lena", "Filtered Lena"],
+    )
+
+    # Build a Gaussian low-pass filter on the shifted frequency grid.
+    gaussian_kernel = np.zeros_like(lena_gray)
+    gaussian_kernel[rows // 2, cols // 2] = 1
+    gaussian_kernel = gaussian_filter(gaussian_kernel, sigma=60, mode="wrap")
+    gaussian_kernel /= gaussian_kernel.max()
+
+    gaussian_filtered_spectrum = gaussian_kernel * transformed_gaussian_noise_lena
+    gaussian_filtered_lena = np.fft.ifft2(
+        np.fft.ifftshift(gaussian_filtered_spectrum)
+    ).real
+
+    show([gaussian_kernel], ["Gaussian frequency filter (sigma=60)"])
+    show(
+        [lena_gray, gaussian_noise_lena, gaussian_filtered_lena],
+        ["Original Lena", "Gaussian noise Lena", "Gaussian filtered Lena"],
+        vrange=(0, 1),
+    )
+
+    # Exploration of noisy image
+    noisy_image = io.imread(NOISY_IMAGE_ASSET_PATH)
+    noisy_image_spectrum = spectrum(noisy_image)
+    show(
+        [noisy_image, np.log1p(np.abs(noisy_image_spectrum))],
+        ["Noisy image", "Noisy image spectrum"],
+    )
+    print(f"noisy_image shape: {noisy_image.shape}")
