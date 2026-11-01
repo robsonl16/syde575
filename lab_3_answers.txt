@@ -7,3 +7,73 @@ pixel intensity which is why there is no energy along the vertical axis in the f
 
 2. What characteristics about the test image can you infer from the Fourier spectra?
 
+Since there is no energy distribution along the vertical axis, we can infer that there minimal/no pixel
+intensity change if you travel from the bottom to the top of the image. In terms of the horizontal axis,
+there is some energy distributed which means there is some pixel intensity change when moving across the
+image from left to right.
+
+3. How did the Fourier spectra change from the original image (before rotation)?
+
+The energy distribution in the fourier spectra rotated just like the white line in the
+test image.
+
+4. What conclusions and observations can be made about image characteristics based on the
+Fourier spectra of both original image and the rotated image?
+
+Idk, seems simple, let's see what chat says
+
+5. Describe how the reconstructed image from the amplitude component look like? What image
+characteristics does the amplitude component capture? (Hint: apply np.log to the result of
+the inverse fft).
+
+Not exact sure, I'm pretty sure that there's white in the corners because we don't add any
+padding. When we take the fourier transform, we convert the image from finite discrete into
+continuous periodic, i.e creating an image that is comprised as a bunch on lena images. When
+we blur, the indiviual images spill over into the image beside it, and when we take the inverse
+these spillages still appear.
+
+6. Describe how the reconstructed image from the phase component look like? What image
+characteristics does the phase component capture?
+
+Idk
+
+7. Compare the two Fourier spectra. What are the differences? Where are these differences
+most visually prominent? Why?
+
+In the orginal image, there isn't much energy distribution in the high frequency ends of the
+fourier spectra, whereas in the guassian noise fourier spectra, there appears to be a constant
+energy distribution from the mid-low, to high frequencies. This is because when we add gaussian
+noise to the image, and now we travel across the image in both the vertical and horizontal
+directions, there are a lot of pixel intensity changes which result in a fairly even spread
+of all frequencies in the fourier spectra.
+
+8. Describe the appearance of the denoised image compared to the original and the noisy images.
+Why does it look this way? What does the ideal low-pass filter do?
+
+The denoised image appears to be blurred, this is because quick pixel intensity changes are
+high frequencies in the fourier spectra and are attenuated. 
+
+Ask chat to explain more.
+
+9. There is a particular artifact present in the restored image. What is it and why does it
+happen?
+
+I think it's talking about the black pixels on the edges on the image.
+
+10. Compare the denoised image with the denoised image using a cut-off radius of 60. How does
+the image and the PSNR differ? Why?
+
+It becomes an even lower low-pass filter which is why is appears to be even more smoothed/blurred.
+
+11. What conclusions can you draw about the relationship between cut-off radius and resulting
+image after filtering? What is the trade-off in terms of noise reduction?
+
+Pretty much what I said in the previous question.
+
+12. Compare the denoised image with the denoised images produced using the ideal low-pass
+filters. How does the image and the PSNR differ? Is it better or worse? Why? Does it have
+the same type of image artifacts?
+
+shit IDK.
+
+
