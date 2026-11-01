@@ -76,4 +76,20 @@ the same type of image artifacts?
 
 shit IDK.
 
+Filter Design:
+So in the noisy image, it looks like there is two tyeps of noise:
+1. The big lines which look they are 20 degrees offseted from the vertical axis
+2. Small lines which look they they are 30 degrees offseted from the horizontal axis
+
+In terms of frequency, the big lines are low frequency noise and the small ones are high
+frequency noise. Looking at the fourier spectra, there's a lot of energy in all frequencies along
+the vertical axis, and a lot of energy along the horizontal axis at all points expect for high
+frequencies.
+
+So, to remove this noise, there needs to be a low-pass to remove the big lines, and a med-low to
+remove the smaller lines. We created an oval looking filter which had a radius of 120 along the vertical
+axis and a radius of 60 along the horizontal axis and rotated it 20 degrees CW. When we applied this
+filter, it removed all of the high frequency noise, but the big lines were still present. We then kept
+lowering the radius by 5 pixels until the big lines were removed. Our final radi's were 120 in the
+vertical, and 25 in the horizontal before rotation.
 

@@ -180,3 +180,38 @@ if __name__ == "__main__":
         ["Noisy image", "Noisy image spectrum"],
     )
     print(f"noisy_image shape: {noisy_image.shape}")
+
+    # Filter design
+    frequnoisy = io.imread(NOISY_IMAGE_ASSET_PATH)
+    show([frequnoisy], ["Noisy image"])
+
+    r_y = 120  # vertical radius
+    r_x = 25  # horizontal radius
+
+    rows, cols = frequnoisy.shape
+    h_freq2 = np.zeros((rows, cols))
+
+    cy2, cx2 = rows // 2, cols // 2
+
+    Y, X = np.ogrid[-r_y : r_y + 1, -r_x : r_x + 1]
+
+    h2 = (X / r_x) ** 2 + (Y / r_y) ** 2 <= 1
+
+    h_freq2[cy2 - r_y : cy2 + r_y + 1, cx2 - r_x : cx2 + r_x + 1] = h2
+    rotated_h_freq2 = transform.rotate(h_freq2, -20)
+
+    show(
+        [rotated_h_freq2],
+        ["Filter in frequency domain"],
+    )
+
+    spectrum_frequnoisy = spectrum(frequnoisy)
+    filtered_frequnoisy_spectrum = rotated_h_freq2 * spectrum_frequnoisy
+    filtered_frequnoisy = np.fft.ifft2(
+        np.fft.ifftshift(filtered_frequnoisy_spectrum)
+    ).real
+
+    show(
+        [frequnoisy, filtered_frequnoisy],
+        ["Noisy image", "Filtered image"],
+    )
