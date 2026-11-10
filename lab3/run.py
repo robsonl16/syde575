@@ -155,6 +155,10 @@ def step_3_filter_design():
     show([frequency_filter], ["Filter in frequency domain"])
 
     filtered_spectrum = frequency_filter * noisy_spectrum
+    show(
+        [log_magnitude(filtered_spectrum)],
+        ["Filtered log-magnitude spectrum"],
+    )
     filtered_image = np.fft.ifft2(np.fft.ifftshift(filtered_spectrum)).real
     show(
         [noisy_image, filtered_image],
