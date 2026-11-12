@@ -3,7 +3,7 @@ from lab2.run import run_lab_2
 from lab3.run import run_lab_3
 
 from pathlib import Path
-from skimage import io, transform
+from skimage import io, transform, util
 import numpy as np
 from skimage.morphology import disk
 import matplotlib.pyplot as plt
@@ -36,4 +36,13 @@ if __name__ == "__main__":
     plt.show()
     plt.imshow(restored, cmap="gray")
     plt.title("Restored Image")
+    plt.show()
+
+    noisy = util.random_noise(f, mode="gaussian", mean=0, var=0.002)
+    noisy_freq = np.fft.fft2(noisy)
+    blurred_noisy_freq = h_freq * noisy_freq
+    restored_noisy_freq = blurred_noisy_freq / h_freq
+    restored_noisy = np.real(np.fft.ifft2(restored_noisy_freq))
+    plt.imshow(restored_noisy, cmap="gray")
+    plt.title("Restored Noisy Image")
     plt.show()
