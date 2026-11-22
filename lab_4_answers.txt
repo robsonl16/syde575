@@ -1,0 +1,14 @@
+1. Compare the restored image with the original image and the blurred image. How does the
+restored image and the PSNR differ from the blurred image? Is it better or worse? Why?
+
+2. Compare the restored image with the restored image from the previous step. How does the
+restored image and the PSNR differ from the previous restored image? Is it better or worse?
+Why?
+
+3. Can you draw any conclusions about inverse filtering when applied to noise degraded images?
+
+4. Compare the restored image with the restored image from the previous step. How does the
+restored image and the PSNR differ from the previous restored image? Is it better or worse?
+Why? Explain it in context with the concept behind Wiener filtering.
+
+5. Can you draw any conclusions about Wiener filtering when applied to noise degraded images?

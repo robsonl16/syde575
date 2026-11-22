@@ -87,9 +87,18 @@ if __name__ == "__main__":
     flat_pixels = degraded_gray[
         select.bbox[0] : select.bbox[1], select.bbox[2] : select.bbox[3]
     ]
+
+    print(np.size(flat_pixels))
     sigma_n_squared = np.var(flat_pixels)
     print("Estimated noise variance: ", sigma_n_squared)
 
-    mn = np.ones((5, 5)) / 25
+    mn = np.ones((10, 10)) / 100
     local_mean = signal.convolve(degraded_gray, mn, mode="same")
     local_var = signal.convolve(degraded_gray**2, mn, mode="same") - local_mean**2
+
+    alpha = (local_var - sigma_n_squared) / local_var
+
+    restored_image = alpha * degraded_gray + (1 - alpha) * local_mean
+    plt.imshow(restored_image, cmap="gray")
+    plt.title("Restored Image with Adaptive Wiener Filter")
+    plt.show()
