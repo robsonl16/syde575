@@ -3,13 +3,15 @@ from PIL import Image
 
 
 def PSNR(
-    reference_img: Image.Image | np.ndarray, test_img: Image.Image | np.ndarray
+    reference_img: Image.Image | np.ndarray,
+    test_img: Image.Image | np.ndarray,
+    max_pixel_value: float = 255.0,
 ) -> float:
 
     if reference_img.size != test_img.size:
         raise ValueError("Input images must have the same dimensions.")
 
-    MAX_PIXEL_VALUE = 255.0
+    MAX_PIXEL_VALUE = max_pixel_value
 
     # Convert images to numpy arrays of type float64
     reference_array = np.array(reference_img, dtype=np.float64)

@@ -8,7 +8,7 @@ from matplotlib.patches import Rectangle
 def save_image_grid(
     images: list[np.ndarray],
     titles: list[str],
-    output_path: Path,
+    output_path: Path | None = None,
     *,
     columns: int = 3,
     figure_title: str | None = None,
@@ -32,16 +32,23 @@ def save_image_grid(
             row_low, row_high, col_low, col_high = roi
             axis.add_patch(
                 Rectangle(
-                    (col_low, row_low), col_high - col_low, row_high - row_low,
-                    fill=False, edgecolor="red", linewidth=2,
+                    (col_low, row_low),
+                    col_high - col_low,
+                    row_high - row_low,
+                    fill=False,
+                    edgecolor="red",
+                    linewidth=2,
                 )
             )
-    for axis in np.atleast_1d(axes).flat[len(images):]:
+    for axis in np.atleast_1d(axes).flat[len(images) :]:
         axis.axis("off")
     if figure_title:
         figure.suptitle(figure_title)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    figure.savefig(output_path, dpi=200)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        figure.savefig(output_path, dpi=200)
+
+    plt.show()
     plt.close(figure)
 
 
@@ -96,8 +103,12 @@ def show_filter_kernels(
         for row in range(kernel.shape[0]):
             for col in range(kernel.shape[1]):
                 axis.text(
-                    col, row, f"{kernel[row, col]:.3g}",
-                    ha="center", va="center", fontsize=7,
+                    col,
+                    row,
+                    f"{kernel[row, col]:.3g}",
+                    ha="center",
+                    va="center",
+                    fontsize=7,
                     color="white" if kernel[row, col] > kernel.max() / 2 else "black",
                 )
         figure.colorbar(image, ax=axis, label="Weight", shrink=0.8)

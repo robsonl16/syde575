@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from skimage import restoration
 from selector_ex import Selector
 from scipy import signal
+from utils.plotting import save_image_grid
+from utils.psnr import PSNR
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 ASSETS_DIR = PROJECT_ROOT / "assets"
@@ -31,24 +33,46 @@ if __name__ == "__main__":
     h_freq = np.fft.fft2(h)
     f_blurfreq = h_freq * np.fft.fft2(f)
     f_blur = np.real(np.fft.ifft2(f_blurfreq))
+    blurred_psnr = PSNR(f, f_blur, max_pixel_value=1.0)
+
+    save_image_grid(
+        [f, f_blur],
+        ["Original", f"Disk blurred\nPSNR: {blurred_psnr:.2f} dB"],
+        columns=2,
+    )
 
     restored_freq = f_blurfreq / h_freq
     restored = np.real(np.fft.ifft2(restored_freq))
+    restored_psnr = PSNR(f, restored, max_pixel_value=1.0)
 
-    plt.imshow(f_blur, cmap="gray")
-    plt.title("Blurred Image")
-    plt.show()
-    plt.imshow(restored, cmap="gray")
-    plt.title("Restored Image")
-    plt.show()
+    save_image_grid(
+        [f, restored],
+        ["Original", f"Inverse filter restored \nPSNR: {restored_psnr:.2f} dB"],
+        columns=2,
+    )
+
+    # plt.imshow(f_blur, cmap="gray")
+    # plt.title("Blurred Image")
+    # plt.show()
+    # plt.imshow(restored, cmap="gray")
+    # plt.title("Restored Image")
+    # plt.show()
 
     noisy_spatial = util.random_noise(f_blur, mode="gaussian", mean=0, var=0.002)
     f_blur_noisy_freq = np.fft.fft2(noisy_spatial)
     restored_noisy_freq = f_blur_noisy_freq / h_freq
     restored_noisy = np.real(np.fft.ifft2(restored_noisy_freq))
-    plt.imshow(restored_noisy, cmap="gray")
-    plt.title("Restored Noisy Image")
-    plt.show()
+    restored_noisy_psnr = PSNR(f, restored_noisy, max_pixel_value=1.0)
+
+    save_image_grid(
+        [f, restored_noisy],
+        ["Original", f"Noisy and restored \nPSNR: {restored_noisy_psnr:.2f} dB"],
+        columns=2,
+    )
+
+    # plt.imshow(restored_noisy, cmap="gray")
+    # plt.title("Restored Noisy Image")
+    # plt.show()
 
     h_centered = np.fft.fftshift(h)
     plt.imshow(h_centered, cmap="gray")
@@ -61,15 +85,27 @@ if __name__ == "__main__":
     restored_wiener_1 = restoration.wiener(f_blur_noisy, h_centered, nsr_1)
     restored_wiener_2 = restoration.wiener(f_blur_noisy, h_centered, nsr_2)
     restored_wiener_3 = restoration.wiener(f_blur_noisy, h_centered, nsr_3)
-    plt.imshow(restored_wiener_1, cmap="gray")
-    plt.title("Restored Noisy Image with Wiener Filter NSR=0.002/var(f)")
-    plt.show()
-    plt.imshow(restored_wiener_2, cmap="gray")
-    plt.title("Restored Noisy Image with Wiener Filter NSR=0.01")
-    plt.show()
-    plt.imshow(restored_wiener_3, cmap="gray")
-    plt.title("Restored Noisy Image with Wiener Filter NSR=0.1")
-    plt.show()
+
+    save_image_grid(
+        [f, restored_wiener_1, restored_wiener_2, restored_wiener_3],
+        [
+            "Original",
+            f"Wiener Filter (NSR=0.002/var(f)) \nPSNR: {restored_noisy_psnr:.2f} dB",
+            f"Wiener Filter (NSR=0.01) \nPSNR: {restored_noisy_psnr:.2f} dB",
+            f"Wiener Filter (NSR=0.1) \nPSNR: {restored_noisy_psnr:.2f} dB",
+        ],
+        columns=4,
+    )
+
+    # plt.imshow(restored_wiener_1, cmap="gray")
+    # plt.title("Restored Noisy Image with Wiener Filter NSR=0.002/var(f)")
+    # plt.show()
+    # plt.imshow(restored_wiener_2, cmap="gray")
+    # plt.title("Restored Noisy Image with Wiener Filter NSR=0.01")
+    # plt.show()
+    # plt.imshow(restored_wiener_3, cmap="gray")
+    # plt.title("Restored Noisy Image with Wiener Filter NSR=0.1")
+    # plt.show()
 
     degraded_gray = io.imread(DEGRADED_ASSET_PATH, as_gray=True)
     degraded_gray = degraded_gray / 255.0
