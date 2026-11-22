@@ -2,6 +2,47 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.patches import Rectangle
+
+
+def save_image_grid(
+    images: list[np.ndarray],
+    titles: list[str],
+    output_path: Path,
+    *,
+    columns: int = 3,
+    figure_title: str | None = None,
+    roi_panel: int | None = None,
+    roi: tuple[int, int, int, int] | None = None,
+) -> None:
+    """Save comparable grayscale images on a fixed [0, 1] intensity scale."""
+    if len(images) != len(titles) or not images:
+        raise ValueError("Provide one title for each image.")
+    rows = (len(images) + columns - 1) // columns
+    figure, axes = plt.subplots(
+        rows, columns, figsize=(4 * columns, 4 * rows), constrained_layout=True
+    )
+    for index, (axis, image, title) in enumerate(
+        zip(np.atleast_1d(axes).flat, images, titles)
+    ):
+        axis.imshow(image, cmap="gray", vmin=0, vmax=1)
+        axis.set_title(title)
+        axis.axis("off")
+        if index == roi_panel and roi is not None:
+            row_low, row_high, col_low, col_high = roi
+            axis.add_patch(
+                Rectangle(
+                    (col_low, row_low), col_high - col_low, row_high - row_low,
+                    fill=False, edgecolor="red", linewidth=2,
+                )
+            )
+    for axis in np.atleast_1d(axes).flat[len(images):]:
+        axis.axis("off")
+    if figure_title:
+        figure.suptitle(figure_title)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(output_path, dpi=200)
+    plt.close(figure)
 
 
 def show_image_and_histogram(

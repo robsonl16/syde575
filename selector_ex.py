@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.widgets import RectangleSelector
+from pathlib import Path
+
 from skimage.io import imread
 
 
