@@ -51,12 +51,15 @@ if __name__ == "__main__":
         columns=2,
     )
 
-    # plt.imshow(f_blur, cmap="gray")
-    # plt.title("Blurred Image")
-    # plt.show()
-    # plt.imshow(restored, cmap="gray")
-    # plt.title("Restored Image")
-    # plt.show()
+    blur_psnr = PSNR(f, f_blur)
+    restored_psnr = PSNR(f, restored)
+
+    plt.imshow(f_blur, cmap="gray")
+    plt.title(f"Blurred Image — PSNR: {blur_psnr:.2f} dB")
+    plt.show()
+    plt.imshow(restored, cmap="gray")
+    plt.title(f"Restored Image — PSNR: {restored_psnr:.2f} dB")
+    plt.show()
 
     noisy_spatial = util.random_noise(f_blur, mode="gaussian", mean=0, var=0.002)
     f_blur_noisy_freq = np.fft.fft2(noisy_spatial)
