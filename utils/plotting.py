@@ -14,8 +14,14 @@ def save_image_grid(
     figure_title: str | None = None,
     roi_panel: int | None = None,
     roi: tuple[int, int, int, int] | None = None,
+    cmap: str | None = "gray",
+    vmin: float = 0.0,
+    vmax: float = 1.0,
 ) -> None:
-    """Save comparable grayscale images on a fixed [0, 1] intensity scale."""
+    """Save comparable images on a fixed [vmin, vmax] intensity scale.
+
+    2D images use ``cmap``; 3D (H, W, 3|4) images are shown as colour.
+    """
     if len(images) != len(titles) or not images:
         raise ValueError("Provide one title for each image.")
     rows = (len(images) + columns - 1) // columns
@@ -25,7 +31,11 @@ def save_image_grid(
     for index, (axis, image, title) in enumerate(
         zip(np.atleast_1d(axes).flat, images, titles)
     ):
-        axis.imshow(image, cmap="gray", vmin=0, vmax=1)
+        if image.ndim == 3:
+            # imshow ignores vmin/vmax for colour, so normalise to [0, 1] ourselves
+            axis.imshow(np.clip((image - vmin) / (vmax - vmin), 0, 1))
+        else:
+            axis.imshow(image, cmap=cmap, vmin=vmin, vmax=vmax)
         axis.set_title(title)
         axis.axis("off")
         if index == roi_panel and roi is not None:
