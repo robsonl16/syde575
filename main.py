@@ -14,6 +14,7 @@ from scipy import signal
 from utils.plotting import save_image_grid
 from utils.psnr import PSNR
 from scipy.ndimage import gaussian_filter
+from sklearn import cluster
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 ASSETS_DIR = PROJECT_ROOT / "assets"
@@ -106,4 +107,59 @@ if __name__ == "__main__":
         cmap=None,
         vmin=0,
         vmax=255,
+    )
+
+    peppers_lab = color.rgb2lab(peppers)
+
+    # K = 2
+    # row = np.array([55, 200]) - 1
+    # col = np.array([155, 400]) - 1
+
+    K = 4
+    row = np.array([55, 130, 200, 280]) - 1
+    col = np.array([155, 110, 400, 470]) - 1
+
+    mu = peppers_lab[row, col]
+
+    m, n, ch = peppers_lab.shape
+    peppers_lab_reshaped = np.reshape(peppers_lab, (m * n, ch), order="F")
+
+    cluster_idx = cluster.KMeans(n_clusters=K, init=mu, n_init=1).fit_predict(
+        peppers_lab_reshaped
+    )
+
+    pixel_labels = np.reshape(cluster_idx, (m, n), order="F")
+    cluster_1 = np.zeros((m, n, ch))
+    cluster_2 = np.zeros((m, n, ch))
+    cluster_3 = np.zeros((m, n, ch))
+    cluster_4 = np.zeros((m, n, ch))
+    for i in range(m):
+        for j in range(n):
+            if pixel_labels[i, j] == 0:
+                cluster_1[i, j, :] = 1
+            elif pixel_labels[i, j] == 1:
+                cluster_2[i, j, :] = 1
+            elif pixel_labels[i, j] == 2:
+                cluster_3[i, j, :] = 1
+            elif pixel_labels[i, j] == 3:
+                cluster_4[i, j, :] = 1
+
+    cluster_1 = np.multiply(peppers_lab, cluster_1)
+    cluster_2 = np.multiply(peppers_lab, cluster_2)
+    cluster_3 = np.multiply(peppers_lab, cluster_3)
+    cluster_4 = np.multiply(peppers_lab, cluster_4)
+    save_image_grid(
+        [
+            color.lab2rgb(cluster_1),
+            color.lab2rgb(cluster_2),
+            color.lab2rgb(cluster_3),
+            color.lab2rgb(cluster_4),
+        ],
+        [
+            "Cluster 1",
+            "Cluster 2",
+            "Cluster 3",
+            "Cluster 4",
+        ],
+        columns=4,
     )
